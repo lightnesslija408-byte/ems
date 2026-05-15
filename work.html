@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Community Health Information System</title>
+    <style>
+        /* ========== GLOBAL RESET & BASE STYLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(145deg, #eef5f0 0%, #d4e4da 100%);
+            line-height: 1.5;
+            padding: 20px;
+            color: #3d04e8;
+        }
+
+        /* ========== CSS GRID LAYOUT (grid-template-areas) ========== */
+        .grid-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #ffffffd9;
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "nav nav"
+                "main sidebar"
+                "footer footer";
+            grid-template-columns: 1fr 300px;   /* main content takes remaining, sidebar fixed width */
+            gap: 0;
+        }
+
+        /* ========== HEADER ========== */
+        .header {
+            grid-area: header;
+            background: #0b4f3c;
+            background-image: radial-gradient(circle at 10% 30%, #0d5e47, #08382a);
+            color: white;
+            padding: 1.8rem 2rem;
+            text-align: center;
+            border-bottom: 5px solid #ffc857;
+        }
+
+        .header h1 {
+            font-size: 2.3rem;
+            letter-spacing: -0.5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* ========== NAVIGATION (Flexbox) ========== */
+        .nav {
+            grid-area: nav;
+            background: #1e2f2c;
+            padding: 0 1rem;
+        }
+
+        .nav ul {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            list-style: none;
+            gap: 0.25rem;
+        }
+
+        .nav li {
+            margin: 0;
+        }
+
+        .nav a {
+            display: inline-block;
+            padding: 1rem 1.8rem;
+            text-decoration: none;
+            color: #d410b3;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border-radius: 40px 40px 0 0;
+            letter-spacing: 0.5px;
+        }
+
+        /* hover effect + transition */
+        .nav a:hover {
+            background-color: #ffc857;
+            color: #0b4f3c;
+            transform: translateY(-3px);
+            box-shadow: 0 -4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* ========== MAIN CONTENT AREA ========== */
+        .main-content {
+            grid-area: main;
+            background: #fefcf5;
+            padding: 2rem 1.8rem;
+        }
+
+        /* sections styling */
+        .section-card {
+            margin-bottom: 2.5rem;
+            border-left: 6px solid #0b4f3c;
+            padding-left: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #0b4f3c;
+            margin-bottom: 1.2rem;
+            display: inline-block;
+            border-bottom: 3px solid #ffc857;
+            padding-bottom: 6px;
+        }
+
+        /* ARTICLES SIDE-BY-SIDE using FLEXBOX (Part 3 requirement) */
+        .articles-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            margin-top: 0.8rem;
+        }
+
+        /* article card styling: borders, shadows, background, hover effects */
+        .article-card {
+            flex: 1 1 280px;
+            background: white;
+            border-radius: 24px;
+            padding: 1.4rem 1.2rem;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+            border: 1px solid #def0e6;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            cursor: default;
+        }
+
+        /* transition + hover effect (card lift and shadow) */
+        .article-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 28px -12px rgba(0, 0, 0, 0.2);
+            border-color: #ffc857;
+            background: #fffdf7;
+        }
+
+        .article-card h3 {
+            color: #0b5e46;
+            margin-bottom: 0.75rem;
+            font-size: 1.4rem;
+            position: relative;
+        }
+
+        /* advanced selector :before for decorative element on article headings */
+        .article-card h3:before {
+            content: "🩺";
+            margin-right: 8px;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .article-card p {
+            color: #2c3e3a;
+            margin-bottom: 0.8rem;
+        }
+
+        .read-more {
+            display: inline-block;
+            margin-top: 0.5rem;
+            color: #0b4f3c;
+            font-weight: bold;
+            text-decoration: none;
+            border-bottom: 2px solid #ffc857;
+            transition: 0.2s;
+        }
+
+        .read-more:hover {
+            color: #e67e22;
+            border-bottom-color: #e67e22;
+            padding-left: 4px;
+        }
+
+        /* ========== SIDEBAR (Flexbox for inner alignment + quick links) ========== */
+        .sidebar {
+            grid-area: sidebar;
+            background: #f4f9f5;
+            padding: 2rem 1.2rem;
+            border-left: 1px solid #cde2d8;
+        }
+
+        .sidebar h3 {
+            font-size: 1.6rem;
+            color: #0b4f3c;
+            margin-bottom: 1.2rem;
+            border-left: 6px solid #ffc857;
+            padding-left: 12px;
+        }
+
+        .announcement, .quick-links {
+            background: white;
+            padding: 1rem 1.2rem;
+            border-radius: 24px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .announcement:hover, .quick-links:hover {
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-links ul {
+            list-style: none;
+        }
+
+        .quick-links li {
+            margin: 0.8rem 0;
+        }
+
+        .quick-links a {
+            text-decoration: none;
+            color: #0b4f3c;
+            font-weight: 500;
+            display: block;
+            padding: 0.3rem 0.5rem;
+            transition: 0.25s;
+            border-radius: 30px;
+        }
+
+        .quick-links a:hover {
+            background: #ffc857;
+            color: #1e2f2c;
+            transform: translateX(8px);
+        }
+
+        /* nth-child styling for alternating announcement items */
+        .announcement p:nth-child(odd) {
+            background: #ecf9f2;
+            padding: 6px 10px;
+            border-radius: 40px;
+            margin-top: 8px;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            grid-area: footer;
+            background: #0b3b30;
+            color: #e2f0ea;
+            text-align: center;
+            padding: 1.8rem;
+            font-size: 0.9rem;
+            border-top: 3px solid #ffc857;
+        }
+
+        .footer p:before {
+            content: "❤️ ";
+            font-size: 0.9rem;
+        }
+
+        /* ========== KEYFRAMES ANIMATION (Advanced CSS Feature) ========== */
+        @keyframes gentlePulse {
+            0% {
+                opacity: 0.9;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.01);
+                background-color: #fff2df;
+            }
+            100% {
+                opacity: 0.9;
+                transform: scale(1);
+            }
+        }
+        @keyframes bouncePop {
+    0% {
+        transform: scale(1) translateY(0);
+    }
+    40% {
+        transform: scale(1.2) translateY(-10px);
+    }
+    70% {
+        transform: scale(0.95) translateY(2px);
+    }
+    100% {
+        transform: scale(1) translateY(0);
+    }
+}
+
+.header h1 {
+    animation: bouncePop 1.5s ease-in-out infinite;
+}
+
+        /* applying animation to first article card example */
+        .article-card:first-child {
+            animation: gentlePulse 3s infinite ease-in-out;
+        }
+
+        /* additional :after selector for footer copyright enhancement */
+        .footer p:after {
+            content: " | Community First 💚";
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+
+        /* ========== RESPONSIVE DESIGN (Media Queries) ========== */
+        @media (max-width: 850px) {
+            .grid-container {
+                grid-template-areas:
+                    "header"
+                    "nav"
+                    "main"
+                    "sidebar"
+                    "footer";
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                border-left: none;
+                border-top: 1px solid #cde2d8;
+            }
+
+            .nav ul {
+                justify-content: space-around;
+            }
+
+            .nav a {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+            }
+
+            .articles-flex {
+                flex-direction: column;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 550px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 1.7rem;
+            }
+            .section-title {
+                font-size: 1.4rem;
+            }
+        }
+
+        /* extra hover effect on aside links */
+        .quick-links li:nth-child(even) a {
+            border-left: 3px solid transparent;
+        }
+        .quick-links li:nth-child(even) a:hover {
+            border-left-color: #0b4f3c;
+        }
+    </style>
+</head>
+<body>
+<div class="grid-container">
+    <!-- Header / Branding -->
+    <header class="header">
+        <h1>🏥 Community Health Information System</h1>
+        <p>Empowering healthier communities with reliable health data & resources</p>
+    </header>
+
+    <!-- Navigation Menu (horizontal, flexbox) -->
+    <nav class="nav">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main content: includes 2 sections each with articles -->
+    <main class="main-content">
+        <!-- SECTION 1 - Preventive Health & Wellness -->
+        <section class="section-card">
+            <h2 class="section-title">🌿 Preventive Health & Wellness</h2>
+            <div class="articles-flex">
+                <!-- Article 1 -->
+                <article class="article-card">
+                    <h3>Daily Nutrition Tips</h3>
+                    <p>Boost your immunity with balanced meals rich in fruits, vegetables, and whole grains. Community health programs offer free nutritional workshops every month.</p>
+                    <a href="#" class="read-more">Learn more →</a>
+                </article>
+                <!-- Article 2 -->
+                <article class="article-card">
+                    <h3>Physical Activity Guidelines</h3>
+                    <p>Adults need at least 150 minutes of moderate activity weekly. Join local walking groups and reduce risk of chronic diseases.</p>
+                    <a href="#" class="read-more">Read guide →</a>
+                </article>
+                <!-- Article 3 (extra to showcase flex wrap) -->
+                <article class="article-card">
+                    <h3>Mental Wellbeing</h3>
+                    <p>Stress management and social connection are key. Access free community mental health first aid courses online.</p>
+                    <a href="#" class="read-more">Explore →</a>
+                </article>
+            </div>
+        </section>
+
+        <!-- SECTION 2 - Community Services & Alerts -->
+        <section class="section-card">
+            <h2 class="section-title">🚑 Health Services & Alerts</h2>
+            <div class="articles-flex">
+                <!-- Article 1 -->
+                <article class="article-card">
+                    <h3>Mobile Vaccination Clinics</h3>
+                    <p>Free flu & COVID-19 boosters every Thursday at community centers. Walk-ins welcome. Ensure your family stays protected.</p>
+                    <a href="#" class="read-more">Find location →</a>
+                </article>
+                <!-- Article 2 -->
+                <article class="article-card">
+                    <h3>Seasonal Health Alerts</h3>
+                    <p>Heatwave preparedness: Stay hydrated, recognize signs of heat exhaustion. Check on elderly neighbors. Updates via our helpline.</p>
+                    <a href="#" class="read-more">Alert details →</a>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <!-- Sidebar : announcements + quick links (Flexbox internal alignment + advanced hover ) -->
+    <aside class="sidebar">
+        <div class="announcement">
+            <h3>📢 Announcements</h3>
+            <p>📅 Free health screening – June 15, 2025 (9AM–2PM)</p>
+            <p>🆕 New telehealth service now available 24/7</p>
+            <p>🧑‍🏫 Virtual nutrition class – register by Friday</p>
+        </div>
+        <div class="quick-links">
+            <h3>🔗 Quick Resources</h3>
+            <ul>
+                <li><a href="#">Emergency Contact Numbers</a></li>
+                <li><a href="#">Health Library & Articles</a></li>
+                <li><a href="#">Clinic Appointment Portal</a></li>
+                <li><a href="#">Volunteer with Us</a></li>
+                <li><a href="#">Report Community Health Issue</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Footer with copyright info -->
+    <footer class="footer">
+        <p>&copy; 2025 Community Health Information System | All information is for educational purposes. </p>
+    </footer>
+</div>
+</body>
+</html>
